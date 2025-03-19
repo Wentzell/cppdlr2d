@@ -1,5 +1,6 @@
 
 set(program_sources
+  imfreq_ops_2d.cpp
   generate_dlr2d_if.cpp
   est_rank_tst.cpp
   )
