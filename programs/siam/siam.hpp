@@ -34,9 +34,7 @@ using namespace dlr2d;
  * \return Vector containing problem parameters and errors, for analysis and
  * plotting
  */
-nda::vector<double> siam_allfuncs(double beta, double u, double lambda,
-                                  double eps, int niomtst, int nbos_tst,
-                                  bool reduced, bool compressbasis,
+nda::vector<double> siam_allfuncs(double beta, double u, double lambda, double eps, int niomtst, int nbos_tst, bool reduced, bool compressbasis,
                                   int niom_dense = 0);
 
 /*!

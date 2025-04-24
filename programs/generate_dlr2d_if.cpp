@@ -23,10 +23,10 @@ using namespace dlr2d;
  */
 int main() {
 
-  double eps = 1e-12;                 // DLR tolerance
-  bool threeterm = false;             // 2+1 or 3+1-term 2D DLR
-  bool compressbasis = true;          // Overcomplete or compressed basis
-  auto path = "../../dlr2d_if_data/"; // Path for DLR 2D grid data
+  double eps         = 1e-12;                  // DLR tolerance
+  bool threeterm     = false;                  // 2+1 or 3+1-term 2D DLR
+  bool compressbasis = true;                   // Overcomplete or compressed basis
+  auto path          = "../../dlr2d_if_data/"; // Path for DLR 2D grid data
 
   // auto lambdas = nda::vector<double>(
   //     {1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0, 512.0, 1024.0});
@@ -49,7 +49,6 @@ int main() {
       build_dlr2d_if(lambdas(i), eps, path, filename);
     }
     auto end = std::chrono::high_resolution_clock::now();
-    fmt::print("Time: {}\n",
-               std::chrono::duration<double>(end - start).count());
+    fmt::print("Time: {}\n", std::chrono::duration<double>(end - start).count());
   }
 }

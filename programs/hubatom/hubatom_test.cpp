@@ -11,33 +11,32 @@
  * DLR expansions, and the algorithm for computing the polarization.
  */
 TEST(hubatom, main) {
-  double beta = 64;   // Inverse temperature
-  double u = 1.0;     // Interaction
-  double lambda = 64; // DLR cutoff
-  double eps = 1e-12; // DLR tolerance
-  int niomtst = 512;  // # imag freq test points (must be even)
-  int nbos_tst = 64;  // # pts in test grid for polarization
+  double beta   = 64;    // Inverse temperature
+  double u      = 1.0;   // Interaction
+  double lambda = 64;    // DLR cutoff
+  double eps    = 1e-12; // DLR tolerance
+  int niomtst   = 512;   // # imag freq test points (must be even)
+  int nbos_tst  = 64;    // # pts in test grid for polarization
 
-  auto path = "../../../dlr2d_if_data/"; // Path for DLR 2D grid data
+  auto path     = "../../../dlr2d_if_data/"; // Path for DLR 2D grid data
   auto filename = get_filename(lambda, eps);
   auto dlr2d_if = read_dlr2d_if(path, filename);
 
   // Get DLR frequencies
   auto dlr_rf = build_dlr_rf(lambda, eps);
-  int r = dlr_rf.size(); // # DLR basis functions
+  int r       = dlr_rf.size(); // # DLR basis functions
 
   fmt::print("\nDLR cutoff Lambda = {}\n", lambda);
   fmt::print("DLR tolerance epsilon = {}\n", eps);
   fmt::print("# DLR basis functions = {}\n", r);
 
   // Get DLR nodes for particle-hole channel
-  auto dlr2d_if_ph = nda::array<int, 2>(dlr2d_if.shape());
+  auto dlr2d_if_ph  = nda::array<int, 2>(dlr2d_if.shape());
   dlr2d_if_ph(_, 0) = -dlr2d_if(_, 0) - 1;
   dlr2d_if_ph(_, 1) = dlr2d_if(_, 1);
 
   auto kmat = build_cf2if(beta, dlr_rf, dlr2d_if);
-  fmt::print("Fine system matrix shape = {} x {}\n", 3 * r * r + r,
-             3 * r * r + r);
+  fmt::print("Fine system matrix shape = {} x {}\n", 3 * r * r + r, 3 * r * r + r);
 
   int niom = dlr2d_if.shape(0);
 
@@ -45,21 +44,21 @@ TEST(hubatom, main) {
   fmt::print("System matrix size = {} x {}\n\n", kmat.shape(0), kmat.shape(1));
 
   // Get fermionic and bosonic DLR grids
-  auto ifops_fer = imfreq_ops(lambda, dlr_rf, Fermion);
-  auto ifops_bos = imfreq_ops(lambda, dlr_rf, Boson);
+  auto ifops_fer  = imfreq_ops(lambda, dlr_rf, Fermion);
+  auto ifops_bos  = imfreq_ops(lambda, dlr_rf, Boson);
   auto dlr_if_fer = ifops_fer.get_ifnodes();
   auto dlr_if_bos = ifops_bos.get_ifnodes();
 
   // Evaluate Green's function on 1D DLR grid and obtain its DLR coefficients
   std::complex<double> nu1 = 0, nu2 = 0;
-  auto g = nda::vector<dcomplex>(r);
+  auto g  = nda::vector<dcomplex>(r);
   auto gr = nda::vector<dcomplex>(r); // G reversed: G(-i nu_n)
   for (int k = 0; k < r; ++k) {
-    nu1 = (2 * dlr_if_fer(k) + 1) * pi * 1i / beta;
-    g(k) = g_fun(u, nu1);
+    nu1   = (2 * dlr_if_fer(k) + 1) * pi * 1i / beta;
+    g(k)  = g_fun(u, nu1);
     gr(k) = g_fun(u, -nu1);
   }
-  auto gc = nda::array<dcomplex, 1>(ifops_fer.vals2coefs(beta, g));
+  auto gc  = nda::array<dcomplex, 1>(ifops_fer.vals2coefs(beta, g));
   auto grc = nda::array<dcomplex, 1>(ifops_fer.vals2coefs(beta, gr));
 
   // Evaluate density correlation function and singlet vertex function on 2D DLR
@@ -68,13 +67,13 @@ TEST(hubatom, main) {
   auto lam_s = nda::vector<dcomplex>(niom);
   for (int k = 0; k < niom; ++k) {
     // Particle-hole channel
-    nu1 = (2 * dlr2d_if_ph(k, 0) + 1) * pi * 1i / beta;
-    nu2 = (2 * dlr2d_if_ph(k, 1) + 1) * pi * 1i / beta;
+    nu1      = (2 * dlr2d_if_ph(k, 0) + 1) * pi * 1i / beta;
+    nu2      = (2 * dlr2d_if_ph(k, 1) + 1) * pi * 1i / beta;
     chi_d(k) = chi_d_fun(u, beta, nu1, nu2);
 
     // Particle-particle channel
-    nu1 = (2 * dlr2d_if(k, 0) + 1) * pi * 1i / beta;
-    nu2 = (2 * dlr2d_if(k, 1) + 1) * pi * 1i / beta;
+    nu1      = (2 * dlr2d_if(k, 0) + 1) * pi * 1i / beta;
+    nu2      = (2 * dlr2d_if(k, 1) + 1) * pi * 1i / beta;
     lam_s(k) = lam_s_fun(u, beta, nu1, nu2);
   }
 
@@ -100,8 +99,8 @@ TEST(hubatom, main) {
   start = std::chrono::high_resolution_clock::now();
   for (int m = -niomtst / 2; m < niomtst / 2; ++m) {
     for (int n = -niomtst / 2; n < niomtst / 2; ++n) {
-      nu1 = ((2 * m + 1) * pi * 1i) / beta;
-      nu2 = ((2 * n + 1) * pi * 1i) / beta;
+      nu1  = ((2 * m + 1) * pi * 1i) / beta;
+      nu2  = ((2 * n + 1) * pi * 1i) / beta;
       midx = niomtst / 2 + m;
       nidx = niomtst / 2 + n;
 
@@ -110,26 +109,21 @@ TEST(hubatom, main) {
       lam_s_tru(midx, nidx) = lam_s_fun(u, beta, nu1, nu2);
 
       // Evaluate DLR expansions
-      chi_d_tst(midx, nidx) =
-          coefs2eval_if(beta, dlr_rf, chi_d_c, chi_d_csing, m, n, 2);
-      lam_s_tst(midx, nidx) =
-          coefs2eval_if(beta, dlr_rf, lam_s_c, lam_s_csing, m, n, 1);
+      chi_d_tst(midx, nidx) = coefs2eval_if(beta, dlr_rf, chi_d_c, chi_d_csing, m, n, 2);
+      lam_s_tst(midx, nidx) = coefs2eval_if(beta, dlr_rf, lam_s_c, lam_s_csing, m, n, 1);
     }
   }
   end = std::chrono::high_resolution_clock::now();
-  fmt::print("Time: {}\n\n",
-             std::chrono::duration<double>(end - start).count());
+  fmt::print("Time: {}\n\n", std::chrono::duration<double>(end - start).count());
 
-  double chi_d_l2 = sqrt(sum(pow(abs(chi_d_tru), 2))) / beta / beta;
-  double chi_d_linf = max_element(abs(chi_d_tru));
-  double chi_d_l2err =
-      sqrt(sum(pow(abs(chi_d_tru - chi_d_tst), 2))) / beta / beta;
+  double chi_d_l2      = sqrt(sum(pow(abs(chi_d_tru), 2))) / beta / beta;
+  double chi_d_linf    = max_element(abs(chi_d_tru));
+  double chi_d_l2err   = sqrt(sum(pow(abs(chi_d_tru - chi_d_tst), 2))) / beta / beta;
   double chi_d_linferr = max_element(abs(chi_d_tru - chi_d_tst));
 
-  double lam_s_l2 = sqrt(sum(pow(abs(lam_s_tru), 2))) / beta / beta;
-  double lam_s_linf = max_element(abs(lam_s_tru));
-  double lam_s_l2err =
-      sqrt(sum(pow(abs(lam_s_tru - lam_s_tst), 2))) / beta / beta;
+  double lam_s_l2      = sqrt(sum(pow(abs(lam_s_tru), 2))) / beta / beta;
+  double lam_s_linf    = max_element(abs(lam_s_tru));
+  double lam_s_l2err   = sqrt(sum(pow(abs(lam_s_tru - lam_s_tst), 2))) / beta / beta;
   double lam_s_linferr = max_element(abs(lam_s_tru - lam_s_tst));
 
   fmt::print("--- chi_D results ---\n");
@@ -150,16 +144,13 @@ TEST(hubatom, main) {
   // Compute polarization from DLR expansions
   auto itops = imtime_ops(lambda, dlr_rf);
 
-  auto pol_s = polarization(beta, lambda, eps, itops, ifops_fer, ifops_bos,
-                                gc, gc, lam_s_c, lam_s_csing);
+  auto pol_s = polarization(beta, lambda, eps, itops, ifops_fer, ifops_bos, gc, gc, lam_s_c, lam_s_csing);
   pol_s *= -1.0 / 2;
 
   auto pol_s_c = ifops_bos.vals2coefs(beta, pol_s); // DLR expansion
 
   // Compute true polarization
-  std::complex<double> pol0_s_tru =
-      beta * -k_it(0.0, -u / 2, beta) /
-      (2 * beta * u * -k_it(0.0, -u / 2, beta) - 4);
+  std::complex<double> pol0_s_tru = beta * -k_it(0.0, -u / 2, beta) / (2 * beta * u * -k_it(0.0, -u / 2, beta) - 4);
 
   // Evaluate polarization on dense grid
   auto pol_s_tst = nda::vector<dcomplex>(nbos_tst);
@@ -174,9 +165,9 @@ TEST(hubatom, main) {
     }
   }
 
-  double pol_s_l2 = sqrt(sum(pow(abs(pol_s_tru), 2))) / beta;
-  double pol_s_linf = max_element(abs(pol_s_tru));
-  double pol_s_l2err = sqrt(sum(pow(abs(pol_s_tru - pol_s_tst), 2))) / beta;
+  double pol_s_l2      = sqrt(sum(pow(abs(pol_s_tru), 2))) / beta;
+  double pol_s_linf    = max_element(abs(pol_s_tru));
+  double pol_s_l2err   = sqrt(sum(pow(abs(pol_s_tru - pol_s_tst), 2))) / beta;
   double pol_s_linferr = max_element(abs(pol_s_tru - pol_s_tst));
 
   fmt::print("--- pol_s results ---\n");

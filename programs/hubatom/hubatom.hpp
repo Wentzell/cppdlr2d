@@ -31,9 +31,7 @@ using namespace dlr2d;
  * \return Vector containing problem parameters and errors, for analysis and
  * plotting
  */
-nda::vector<double> hubatom_allfuncs(double beta, double u, double lambda,
-                                     double eps, int niomtst, int nbos_tst,
-                                     bool reduced, bool compressbasis,
+nda::vector<double> hubatom_allfuncs(double beta, double u, double lambda, double eps, int niomtst, int nbos_tst, bool reduced, bool compressbasis,
                                      int niom_dense = 0);
 
 /*!
@@ -63,8 +61,7 @@ nda::vector<double> hubatom_allfuncs(double beta, double u, double lambda,
  * \return Vector containing problem parameters and errors, for analysis and
  * plotting
  */
-nda::vector<double> hubatom_allfuncs_3term(double beta, double u, double lambda,
-                                double eps, int niomtst, int nbos_tst);
+nda::vector<double> hubatom_allfuncs_3term(double beta, double u, double lambda, double eps, int niomtst, int nbos_tst);
 
 /*!
  * \defgroup HubSolns
@@ -81,53 +78,45 @@ std::complex<double> g_fun(double u, std::complex<double> nu);
 /*!
  * \brief Three-point correlator, singlet channel
  */
-std::complex<double> chi_s_fun(double u, double beta, std::complex<double> nu1,
-                               std::complex<double> nu2);
+std::complex<double> chi_s_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2);
 
 /*!
  * \brief Three-point correlator, particle-hole channel
  *
  * \param channel +1 (density) or -1 (magnetic)
  */
-std::complex<double> chi_ph_fun(double u, double beta, std::complex<double> nu1,
-                                std::complex<double> nu2, int channel);
+std::complex<double> chi_ph_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2, int channel);
 
 /*!
  * \brief Three-point correlator, density channel
  */
-std::complex<double> chi_d_fun(double u, double beta, std::complex<double> nu1,
-                               std::complex<double> nu2);
+std::complex<double> chi_d_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2);
 
 /*!
  * \brief Three-point correlator, magnetic channel
  */
-std::complex<double> chi_m_fun(double u, double beta, std::complex<double> nu1,
-                               std::complex<double> nu2);
+std::complex<double> chi_m_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2);
 
 /*!
  * \brief Vertex function, singlet channel
  */
-std::complex<double> lam_s_fun(double u, double beta, std::complex<double> nu1,
-                               std::complex<double> nu2);
+std::complex<double> lam_s_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2);
 
 /*!
  * \brief Vertex function, particle-hole channel
  *
  * \param channel +1 (density) or -1 (magnetic)
  */
-std::complex<double> lam_ph_fun(double u, double beta, std::complex<double> nu1,
-                                std::complex<double> nu2, int channel);
+std::complex<double> lam_ph_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2, int channel);
 
 /*!
  * \brief Vertex function, density channel
  */
-std::complex<double> lam_d_fun(double u, double beta, std::complex<double> nu1,
-                               std::complex<double> nu2);
+std::complex<double> lam_d_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2);
 
 /*!
  * \brief Vertex function, magnetic channel
  */
-std::complex<double> lam_m_fun(double u, double beta, std::complex<double> nu1,
-                               std::complex<double> nu2);
+std::complex<double> lam_m_fun(double u, double beta, std::complex<double> nu1, std::complex<double> nu2);
 
 /** @} */ // end of HubSolns group
